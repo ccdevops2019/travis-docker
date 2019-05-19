@@ -1,10 +1,22 @@
 sudo: required
 services:
-  - docker
+- docker
+env:
+  global:
+    - REGISTRY_USER=turnopil
+    - secure: fe5zTcKsYDJ2CCpmxhoLtlaIt4hsIk3v0qSdAvLH39rYBU80ATQ1pH8b8TCq4zJ8uhYXarowUKEVMEF8CCPhygcjLLbisWCBwcP9zUl5l1uGgIW0GwIDd/5Mt+8lDqNww6U5w8mF+hzoNHhaTqcmEgXvopMKnL3NpLGEydVt3S25Qh1bJary1eb+YSaFNe8Mp9eU6I5/UoC9v5tr/asbyG/k7nN45HdWNWT7okG0XzV7p634c5uZwfMv89qhvhpRDU9mr7b+vDR297FLrUNQr+J2Tz55aDm0Ke7TZ+Wtjc0nsAUkOh/02GMcmp31n92JKCl7047+U61i+CKa1pRObe/zn8PABgLXYWssQy0ninBfKsJXx0INoy5ndJl3mVRkMIJXHc98kOQzs93RxkLWu/sgyF4iGaPhSasX/y9EqWGn/bh9Pd+r4AQimFKs3CtiqEHjYbb3dFM3VnReFg7YJ/TmARPx7ypiAvveurp/y+eRxIVHEiFxM7FLOa0gMm3K0ObwbAUwwrRgjjmSUxsOP98woxWFYjxrosT93rz4uuvsrMaUM37rXsKDf0Z3qlukVCi81CU64FwTldh14ulkuGKdw2my6wKdHoDU6dt0EPBh9TgZXSwkMYjrXBS/d8hZMkibzbNLfgNY0UWpvLRnc1sUkk97iWzJk4/WuvmgdKo=
 
 script:
-  - docker build --tag cowsay .
-  - docker run cowsay
+  - docker build --tag turnopil/turnopil:cowsay .
+  - docker run turnopil/turnopil:cowsay
 
 after_script:
   - docker images
+
+before_deploy:
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+deploy:
+  provider: script
+  script: docker push turnopil/turnopil:cowsay
+  on:
+    branch: docker
